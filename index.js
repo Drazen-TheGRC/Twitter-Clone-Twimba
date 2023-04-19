@@ -1,3 +1,3 @@
-import { tweetsData } from '/data.js'
+import { tweetsData } from "./data.js"
 
 console.log(tweetsData)
