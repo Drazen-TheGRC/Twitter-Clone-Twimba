@@ -1,9 +1,6 @@
 import { tweetsData } from "./data.js"
 import { v4 as uuidv4 } from "https://jspm.dev/uuid"
 
-const tweetInput = document.getElementById("tweet-input")
-const tweetBtn = document.getElementById("tweet-btn")
-
 
 
 document.addEventListener("click", function(e){
@@ -81,21 +78,28 @@ function handleRetweetClick(tweetId){
 }
 
 function handleTweetClick(){
+
+    const tweetInput = document.getElementById("tweet-input")
+    
     // Check if the button is working 
     console.log("You clicked Tweet btn")
 
-    tweetsData.unshift(
-    {
-        handle: "@Drazen-TheGRC",
-        profilePic: "images/drazen.drinic.jpg",
-        likes: 0,
-        retweets: 0,
-        tweetText: tweetInput.value,
-        replies: [],
-        isLiked: false,
-        isRetweeted: false,
-        uuid: uuidv4()
-    })
+    if(tweetInput.value){
+        tweetsData.unshift(
+            {
+                handle: "@Drazen-TheGRC",
+                profilePic: "images/drazen.drinic.jpg",
+                likes: 0,
+                retweets: 0,
+                tweetText: tweetInput.value,
+                replies: [],
+                isLiked: false,
+                isRetweeted: false,
+                uuid: uuidv4()
+            }
+        )
+    }
+    
 
     // Render
     render()
