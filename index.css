@@ -75,6 +75,15 @@ textarea{
     resize: none;
 }
 
+.reply-input{
+    border: 1px solid #1da1fa;
+    border-radius: 5px;
+    margin: 10px 0 10px 40px;
+    width: 80%;
+
+    font-size: 14px;
+}
+
 button{
     background-color: #1DA1F2;
     border: none;
@@ -85,6 +94,12 @@ button{
     cursor: pointer;
     font-size: 20px;
     font-weight: 600;
+}
+
+.reply-btn{
+    margin: 0px 0 0px 40px;
+    width: 30%;
+    font-size: 14px;
 }
 
 /* tweet */

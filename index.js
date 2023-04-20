@@ -21,6 +21,14 @@ document.addEventListener("click", function(e){
     else if(e.target.dataset.mytweet){
         handleDeleteTweetClick(e.target.dataset.mytweet)
     }
+    else if(e.target.dataset.myreplybtn){
+        handleMyReplyClick(e.target.dataset.myreplybtn)
+    }
+    // Delete replay
+    else if(e.target.dataset.myreplytweetid && e.target.dataset.myreplyid){
+        handleDeleteReplyClick(e.target.dataset.myreplytweetid, e.target.dataset.myreplyid)
+    }
+
 
 })
 
@@ -110,7 +118,41 @@ function handleTweetClick(){
     tweetInput.value = ""
 }
 
-function handleDeleteTweetClick(tweetId){
+
+function handleMyReplyClick(tweetId){
+
+    // Get tweet object with correct uuid
+    const targetTweetObj = tweetsData.filter(function(tweet){
+        return tweet.uuid === tweetId
+    })[0] // Making it an object instead of array
+
+    let replyInputId = "reply-input-" + targetTweetObj.uuid
+    
+    const replyInput = document.getElementById(replyInputId)
+
+    // Check if the button is working 
+    console.log("You clicked Reply btn")
+    
+    if(replyInput.value){
+        console.log("replyInput value: " + replyInput.value)
+        targetTweetObj.replies.unshift(
+            {
+                handle: "@Drazen-TheGRC",
+                profilePic: "images/drazen.drinic.jpg",
+                tweetText: replyInput.value,
+                uuid: uuidv4()
+            }
+        )
+    }
+
+    // Render
+    render()
+    // Clear input
+    replyInput.value = ""
+}
+
+
+function handleDeleteTweetClick(tweetId, replyId){
 
     // Check if the button is working 
     console.log("You clicked delete btn with uuid: ", tweetId)
@@ -129,23 +171,70 @@ function handleDeleteTweetClick(tweetId){
     render() 
 }
 
+function handleDeleteReplyClick(tweetId, replyId){
+
+    // Check if the button is working 
+    console.log("You clicked delete btn with uuid: ", tweetId)
+
+    // Get tweet object with correct uuid
+    const targetTweetObj = tweetsData.filter(function(tweet){
+        return tweet.uuid === tweetId
+    })[0] // Making it an object instead of array
+
+     const targetReply = targetTweetObj.replies.filter(function(reply){
+         return reply.uuid === replyId
+     })[0]
+
+     
+    // Getting tweet index
+    let indexOfReply = targetTweetObj.replies.indexOf(targetReply)
+    // Deleting tweet 
+    targetTweetObj.replies.splice(indexOfReply, 1)
+
+    // Render after updates
+    render() 
+}
+
 function getFeedHtml(){
     
     let feedHtml = ""
     
     tweetsData.forEach(function(tweet){
 
-        // Creating replies HTML if there are replies in the tweet
+        // Creating option replies HTML if there are replies in the tweet
         let repliesHtml = ""
+        repliesHtml = 
         
+            `
+            <div class="">
+			    <textarea id="reply-input-${tweet.uuid}" class="reply-input" placeholder="Add a reply" ></textarea>
+                <button id="reply-btn-${tweet.uuid}" class="reply-btn" data-myreplybtn="${tweet.uuid}">Reply</button>
+		    </div>
+            `
+        
+        // Displaying reply    
         if(tweet.replies.length > 0){
 
+            
             tweet.replies.forEach(function(reply){
+                
+                let myReplyDeleteBtnClass = ""
 
+                if( reply.handle!= "@Drazen-TheGRC"){
+                    myReplyDeleteBtnClass = "hidden"
+                }
                 repliesHtml += 
                 `
                     <div class="tweet-reply">
                         <div class="tweet-inner">
+                            
+
+
+                        
+                            <i class="close-btn fa-solid fa-xmark ${myReplyDeleteBtnClass}" data-myreplytweetid="${tweet.uuid}" data-myreplyid="${reply.uuid}"></i>
+
+
+
                             <img src="${reply.profilePic}" class="profile-pic">
                             <div>
                                 <p class="handle">${reply.handle}</p>
