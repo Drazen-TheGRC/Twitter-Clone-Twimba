@@ -4,6 +4,14 @@ html, body {
     font-family: 'Roboto', sans-serif;
 }
 
+.border-line {
+    width: 340px;
+    margin: 20px auto;
+    padding: 20px 0px;
+    border: 5px solid #1da1fa;
+    border-radius: 20px;
+}
+
 /* typography and icons */
 
 h1{
@@ -19,6 +27,14 @@ i{
 
 .fa-solid, .fa-regular {
     color: #999;
+}
+.close-btn{
+    position: absolute;
+    right: 5px;
+}
+
+.close-btn:hover{
+    color: red;
 }
 
 .liked{
@@ -84,6 +100,8 @@ button{
     display: flex;
     align-items: flex-start;
     gap: 10px;
+
+    position: relative;
 }
 
 .tweet-details{
@@ -129,4 +147,5 @@ button{
 /* utility */
 .hidden{
     display: none;
+    visibility: hidden;
 }

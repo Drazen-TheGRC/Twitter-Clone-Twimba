@@ -18,6 +18,9 @@ document.addEventListener("click", function(e){
     else if(e.target.id === "tweet-btn"){
         handleTweetClick()
     }
+    else if(e.target.dataset.mytweet){
+        handleDeleteTweetClick(e.target.dataset.mytweet)
+    }
 
 })
 
@@ -80,7 +83,7 @@ function handleRetweetClick(tweetId){
 function handleTweetClick(){
 
     const tweetInput = document.getElementById("tweet-input")
-    
+
     // Check if the button is working 
     console.log("You clicked Tweet btn")
 
@@ -107,6 +110,24 @@ function handleTweetClick(){
     tweetInput.value = ""
 }
 
+function handleDeleteTweetClick(tweetId){
+
+    // Check if the button is working 
+    console.log("You clicked delete btn with uuid: ", tweetId)
+
+    // Get tweet object with correct uuid
+    const targetTweetObj = tweetsData.filter(function(tweet){
+        return tweet.uuid === tweetId
+    })[0] // Making it an object instead of array
+
+    // Getting tweet index
+    let indexOfTweet = tweetsData.indexOf(targetTweetObj)
+    // Deleting tweet 
+    tweetsData.splice(indexOfTweet, 1)
+
+    // Render after updates
+    render() 
+}
 
 function getFeedHtml(){
     
@@ -146,6 +167,11 @@ function getFeedHtml(){
         if(tweet.isRetweeted){
             retweetIconClass = "retweeted"
         }
+
+        let myTweetDeleteBtnClass = ""
+        if(tweet.handle != "@Drazen-TheGRC"){
+            myTweetDeleteBtnClass = "hidden"
+        }
         
         // Building HTML
         feedHtml += 
@@ -154,6 +180,8 @@ function getFeedHtml(){
                 <div class="tweet-inner">
                     <img src="${tweet.profilePic}" class="profile-pic">
                     <div>
+                        <i class="close-btn fa-solid fa-xmark ${myTweetDeleteBtnClass}" data-mytweet="${tweet.uuid}"></i>
+
                         <p class="handle">${tweet.handle}</p>
                         <p class="tweet-text">${tweet.tweetText}</p>
                         <div class="tweet-details">
