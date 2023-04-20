@@ -5,8 +5,21 @@ const tweetBtn = document.getElementById("tweet-btn")
 
 
 
-tweetBtn.addEventListener("click", function(){
-    console.log(tweetInput.value)
+document.addEventListener("click", function(e){
+
+    if(e.target.dataset.reply){
+        console.log("You clicked reply btn with uuid: ", e.target.dataset.reply)
+    }
+    else if(e.target.dataset.like){
+        console.log("You clicked like btn with uuid: ", e.target.dataset.like)
+    }
+    else if(e.target.dataset.retweet){
+        console.log("You clicked retweet btn with uuid: ", e.target.dataset.retweet)
+    }
+    else if(e.target.id === "tweet-btn"){
+        console.log("You clicked Tweet btn with id: ", e.target.id)
+    }
+    
 })
 
 
@@ -26,12 +39,15 @@ function getFeedHtml(){
                         <p class="tweet-text">${tweet.tweetText}</p>
                         <div class="tweet-details">
                             <span class="tweet-detail">
+                                <i class="fa-regular fa-comment-dots" data-reply="${tweet.uuid}"></i>
                                 ${tweet.replies.length}
                             </span>
                             <span class="tweet-detail">
+                                <i class="fa-solid fa-heart" data-like="${tweet.uuid}"></i>
                                 ${tweet.likes}
                             </span>
                             <span class="tweet-detail">
+                                <i class="fa-solid fa-retweet" data-retweet="${tweet.uuid}"></i>
                                 ${tweet.retweets}
                             </span>
                         </div>   
@@ -42,7 +58,7 @@ function getFeedHtml(){
    })
 
    return feedHtml
-    
+
 }
 
 
