@@ -26,6 +26,9 @@ document.addEventListener("click", function(e){
 function handleReplyClick(tweetId){
     // Check if the button is working 
     console.log("You clicked reply btn with uuid: ", tweetId)
+
+    // Accessing the right tweet and its replies div and then toggling the hidden class ON/OFF
+    document.getElementById(`replies-${tweetId}`).classList.toggle("hidden")
 }
 
 function handleLikeClick(tweetId){
@@ -88,6 +91,28 @@ function getFeedHtml(){
     
     tweetsData.forEach(function(tweet){
 
+        // Creating replies HTML if there are replies in the tweet
+        let repliesHtml = ""
+        
+        if(tweet.replies.length > 0){
+
+            tweet.replies.forEach(function(reply){
+
+                repliesHtml += 
+                `
+                    <div class="tweet-reply">
+                        <div class="tweet-inner">
+                            <img src="${reply.profilePic}" class="profile-pic">
+                            <div>
+                                <p class="handle">${reply.handle}</p>
+                                <p class="tweet-text">${reply.tweetText}</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            })
+        }
+
         // Checking if tweet is liked if it is than we add class to the icon to change icon color
         let likeIconClass = ""
         if(tweet.isLiked){
@@ -123,6 +148,10 @@ function getFeedHtml(){
                             </span>
                         </div>   
                     </div>            
+                </div>
+                <div id="replies-${tweet.uuid}" class="hidden">
+                    <!-- REPLIES HERE -->
+                    ${repliesHtml}
                 </div>
             </div>
         `
