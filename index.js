@@ -238,7 +238,7 @@ function getFeedHtml(){
                             <img src="${reply.profilePic}" class="profile-pic">
                             <div>
                                 <p class="handle">${reply.handle}</p>
-                                <p class="tweet-text">${reply.tweetText}</p>
+                                <p class="reply-text">${reply.tweetText}</p>
                             </div>
                         </div>
                     </div>

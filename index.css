@@ -68,10 +68,10 @@ textarea{
     border: none;
     padding: 10px;
     margin: 0 0 20px 0;
-    height: 60px;
+    height: 100px;
     width: 100%;
     font-size: 20px;
-    line-height: 30px;
+    line-height: 25px;
     resize: none;
 }
 
@@ -145,10 +145,15 @@ button{
     margin-top: 0;
 }
 
-.tweet-text{
+.tweet-text,
+.reply-text{
     width: 207px;
     font-size: 14px;
     line-height: 20px;
+}
+
+.reply-text{
+    width: 170px;
 }
 
 /* images */
