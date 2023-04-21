@@ -1,8 +1,25 @@
-import { tweetsData } from "./data.js"
+// Import tweetData
+import { tweetsDataFromJS } from "./data.js"
+// Import uuidv4
 import { v4 as uuidv4 } from "https://jspm.dev/uuid"
 
 
 
+// Setting localStorage
+let tweetsData 
+if(localStorage.getItem("tweetsData") === null){
+    localStorage.setItem("tweetsData", JSON.stringify(tweetsDataFromJS))
+    tweetsData = JSON.parse(localStorage.getItem("tweetsData"))
+}else{
+    tweetsData = JSON.parse(localStorage.getItem("tweetsData"))
+}
+// Update local storage function
+function updateLocalStorage(){
+    localStorage.setItem("tweetsData", JSON.stringify(tweetsData))
+}
+
+
+// Event listeners 
 document.addEventListener("click", function(e){
 
     if(e.target.dataset.reply){
@@ -28,10 +45,11 @@ document.addEventListener("click", function(e){
     else if(e.target.dataset.myreplytweetid && e.target.dataset.myreplyid){
         handleDeleteReplyClick(e.target.dataset.myreplytweetid, e.target.dataset.myreplyid)
     }
-
-
 })
 
+
+
+// Opens tweet replys
 function handleReplyClick(tweetId){
     // Check if the button is working 
     console.log("You clicked reply btn with uuid: ", tweetId)
@@ -40,6 +58,9 @@ function handleReplyClick(tweetId){
     document.getElementById(`replies-${tweetId}`).classList.toggle("hidden")
 }
 
+
+
+// Like btn updates number of likes and the look of the btn
 function handleLikeClick(tweetId){
     // Check if the button is working 
     console.log("You clicked like btn with uuid: ", tweetId)
@@ -49,9 +70,6 @@ function handleLikeClick(tweetId){
         return tweet.uuid === tweetId
     })[0] // Making it an object instead of array
 
-    // Check if object exists
-    console.log(targetTweetObj)
-
     // Increment likes if not already liked otherwise decrement likes
     if(targetTweetObj.isLiked){
         targetTweetObj.likes--
@@ -60,10 +78,15 @@ function handleLikeClick(tweetId){
     }
     targetTweetObj.isLiked = !targetTweetObj.isLiked
 
+    // Update local storage
+    updateLocalStorage()
     // Render after updates
     render() 
 }
 
+
+
+// Retweet btn updates number of retweets and the look of the btn
 function handleRetweetClick(tweetId){
     // Check if the button is working 
     console.log("You clicked retweet btn with uuid: ", tweetId)
@@ -73,10 +96,7 @@ function handleRetweetClick(tweetId){
         return tweet.uuid === tweetId
     })[0] // Making it an object instead of array
 
-    // Check if object exists
-    console.log(targetTweetObj)
-
-    // Increment likes if not already liked otherwise decrement likes
+    // Increment retweets if not already retweeted otherwise decrement retweets
     if(targetTweetObj.isRetweeted){
         targetTweetObj.retweets--
     }else{
@@ -84,10 +104,15 @@ function handleRetweetClick(tweetId){
     }
     targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted
 
+    // Update local storage
+    updateLocalStorage()
     // Render after updates
-    render() 
+    render()  
 }
 
+
+
+// Tweet btn to handle posting a new tweet
 function handleTweetClick(){
 
     const tweetInput = document.getElementById("tweet-input")
@@ -95,6 +120,7 @@ function handleTweetClick(){
     // Check if the button is working 
     console.log("You clicked Tweet btn")
 
+    // Creates new tweet
     if(tweetInput.value){
         tweetsData.unshift(
             {
@@ -111,14 +137,17 @@ function handleTweetClick(){
         )
     }
     
-
-    // Render
-    render()
+    // Update local storage
+    updateLocalStorage()
+    // Render after updates
+    render() 
     // Clear input
     tweetInput.value = ""
 }
 
 
+
+// Creating a new reply on a specific tweet
 function handleMyReplyClick(tweetId){
 
     // Get tweet object with correct uuid
@@ -133,6 +162,7 @@ function handleMyReplyClick(tweetId){
     // Check if the button is working 
     console.log("You clicked Reply btn")
     
+    // Creates new reply
     if(replyInput.value){
         console.log("replyInput value: " + replyInput.value)
         targetTweetObj.replies.unshift(
@@ -145,13 +175,17 @@ function handleMyReplyClick(tweetId){
         )
     }
 
-    // Render
-    render()
+    // Update local storage
+    updateLocalStorage()
+    // Render after updates
+    render() 
     // Clear input
     replyInput.value = ""
 }
 
 
+
+// Deletes a specific tweet posted by the user
 function handleDeleteTweetClick(tweetId, replyId){
 
     // Check if the button is working 
@@ -167,10 +201,15 @@ function handleDeleteTweetClick(tweetId, replyId){
     // Deleting tweet 
     tweetsData.splice(indexOfTweet, 1)
 
+    // Update local storage
+    updateLocalStorage()
     // Render after updates
     render() 
 }
 
+
+
+// Deletes a specific reply posted by the user
 function handleDeleteReplyClick(tweetId, replyId){
 
     // Check if the button is working 
@@ -181,30 +220,34 @@ function handleDeleteReplyClick(tweetId, replyId){
         return tweet.uuid === tweetId
     })[0] // Making it an object instead of array
 
+    // Get reply object with correct uuid
      const targetReply = targetTweetObj.replies.filter(function(reply){
          return reply.uuid === replyId
      })[0]
 
-     
-    // Getting tweet index
+    // Getting reply index
     let indexOfReply = targetTweetObj.replies.indexOf(targetReply)
-    // Deleting tweet 
+    // Deleting reply 
     targetTweetObj.replies.splice(indexOfReply, 1)
 
+    // Update local storage
+    updateLocalStorage()
     // Render after updates
     render() 
 }
 
+
+
+// Creating and returning HTML to be rendered 
 function getFeedHtml(){
     
     let feedHtml = ""
     
     tweetsData.forEach(function(tweet){
 
-        // Creating option replies HTML if there are replies in the tweet
+        // Creating reply input and btn
         let repliesHtml = ""
         repliesHtml = 
-        
             `
             <div class="">
 			    <textarea id="reply-input-${tweet.uuid}" class="reply-input" placeholder="Add a reply" ></textarea>
@@ -212,10 +255,9 @@ function getFeedHtml(){
 		    </div>
             `
         
-        // Displaying reply    
+        // Displaying replys if they exist on tweet    
         if(tweet.replies.length > 0){
 
-            
             tweet.replies.forEach(function(reply){
                 
                 let myReplyDeleteBtnClass = ""
@@ -228,12 +270,7 @@ function getFeedHtml(){
                     <div class="tweet-reply">
                         <div class="tweet-inner">
                             
-
-
-                        
                             <i class="close-btn fa-solid fa-xmark ${myReplyDeleteBtnClass}" data-myreplytweetid="${tweet.uuid}" data-myreplyid="${reply.uuid}"></i>
-
-
 
                             <img src="${reply.profilePic}" class="profile-pic">
                             <div>
@@ -257,6 +294,7 @@ function getFeedHtml(){
             retweetIconClass = "retweeted"
         }
 
+        // Shows a delete btn if the tweet belongs to the user
         let myTweetDeleteBtnClass = ""
         if(tweet.handle != "@Drazen-TheGRC"){
             myTweetDeleteBtnClass = "hidden"
@@ -297,17 +335,17 @@ function getFeedHtml(){
         `
    })
 
-   // Rendering 
+   // Returning ready HTML to be rendered 
    return feedHtml
-
 }
 
 
 
+// Render tweets
 function render(){
     document.getElementById("feed").innerHTML = getFeedHtml()
 }
 
 
-
+// Initial tweet render
 render()
